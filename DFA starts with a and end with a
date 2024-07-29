@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_STATES 3
+#define MAX_SYMBOLS 2
+
+
+typedef struct {
+    int transition[MAX_STATES][MAX_SYMBOLS];
+    int start_state;
+    int accept_state;
+} DFA;
+
+
+int simulateDFA(DFA dfa, char *input) {
+    int current_state = dfa.start_state;
+    int i;
+
+    for (i = 0; i < strlen(input); i++) {
+        char symbol = input[i];
+        int symbol_index = (symbol == 'a') ? 0 : (symbol == 'b') ? 1 : -1;
+
+        if (symbol_index == -1) {
+            
+            printf("Invalid symbol encountered: %c\n", symbol);
+            return 0;
+        }
+
+        current_state = dfa.transition[current_state][symbol_index];
+        printf("Read symbol: %c, transitioning to state: %d\n", symbol, current_state);
+    }
+
+    return current_state == dfa.accept_state;
+}
+
+int main() {
+    DFA dfa;
+
+    
+    dfa.transition[0][0] = 1; 
+    dfa.transition[0][1] = 0; 
+    dfa.transition[1][0] = 1; 
+    dfa.transition[1][1] = 1; 
+    dfa.transition[2][0] = 1; 
+    dfa.transition[2][1] = 1; 
+
+    dfa.start_state = 0;
+    dfa.accept_state = 1;
+
+    char input[100];
+    printf("Enter a string: ");
+    scanf("%s", input);
+
+    if (simulateDFA(dfa, input)) {
+        printf("The string is accepted by the DFA.\n");
+    } else {
+        printf("The string is not accepted by the DFA.\n");
+    }
+
+    return 0;
+}
